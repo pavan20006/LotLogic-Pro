@@ -54,6 +54,9 @@ select{cursor:pointer}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin:7px 0 14px}
 .chips button{width:auto;border:1px solid color-mix(in srgb,var(--accent) 25%,var(--line));border-radius:9px;padding:7px 13px;background:var(--soft);color:var(--accent);font-weight:850;cursor:pointer;transition:.18s}
 .chips button:hover{background:var(--accent);color:#fff;transform:translateY(-2px);box-shadow:0 7px 18px color-mix(in srgb,var(--accent) 25%,transparent)}
+.mode-actions{display:flex;justify-content:flex-end;margin:-3px 0 16px}
+.reset-btn{width:auto;border:1px solid var(--line);border-radius:10px;padding:8px 13px;background:var(--panel);color:var(--accent);font:inherit;font-size:.78rem;font-weight:850;cursor:pointer;transition:.18s}
+.reset-btn:hover{border-color:var(--accent);background:var(--soft);transform:translateY(-1px)}
 .big{position:relative;isolation:isolate;overflow:hidden;padding:22px 23px;background:linear-gradient(120deg,var(--soft),var(--soft2));border:1px solid var(--line);border-radius:18px;margin-bottom:16px}
 .big:after{content:"P/L";position:absolute;z-index:-1;right:10px;bottom:-27px;font-size:6.2rem;line-height:1;font-weight:950;letter-spacing:-.08em;color:color-mix(in srgb,var(--accent) 8%,transparent)}
 .big small{display:block;color:var(--muted);font-weight:800;letter-spacing:.02em}
@@ -86,13 +89,13 @@ select{cursor:pointer}
 <div class="field"><label for="mode">Calculation mode</label><select id="mode"><option value="risk">Position sizing (risk-based)</option><option value="fixed">Trade calculator (enter lot size)</option></select></div>
 <div class="row"><div class="field"><label for="asset">Asset class</label><select id="asset"><option>Forex</option><option>Indices / CFDs</option><option>Metals / Commodities</option><option>Stocks</option><option>Futures</option><option>Crypto</option><option>Other</option></select></div><div class="field"><label for="symbol">Instrument / symbol</label><select id="symbol"></select><input id="custom" placeholder="Enter custom symbol" hidden></div></div>
 <div class="row"><div class="field"><label for="balance">Account balance</label><input id="balance" type="number" min="0" step="any" value="3000"></div><div class="field"><label for="currency">Account currency</label><select id="currency"><option>USD</option><option>INR</option><option>EUR</option><option>GBP</option><option>AUD</option><option>CAD</option><option>JPY</option><option>CHF</option></select></div></div>
-<div id="riskFields"><div class="row"><div class="field"><label for="riskMode">Risk method</label><select id="riskMode"><option value="cash">Fixed cash risk</option><option value="percent">Percentage of account</option></select></div><div class="field"><label for="risk">Risk amount</label><input id="risk" type="number" min="0" step="any" value="75"></div></div><div class="chips" id="riskChips"><button type="button" data-risk=".5">0.5%</button><button type="button" data-risk="1">1%</button><button type="button" data-risk="2">2%</button></div></div>
-<div class="row"><div class="field" id="lotField"><label for="lots">Lot size / quantity</label><input id="lots" type="number" min="0" step="any" value="1"></div><div class="field"><label for="leverage">Leverage (100 = 1:100)</label><input id="leverage" type="number" min="1" step="any" value="100"></div></div>
+<div id="riskFields"><div class="row"><div class="field"><label for="riskMode">Risk method</label><select id="riskMode"><option value="cash">Fixed cash risk</option><option value="percent">Percentage of account</option></select></div><div class="field"><label for="risk">Risk amount</label><input id="risk" type="number" min="0" step="any" value="75"></div></div><div class="chips" id="riskChips"><button type="button" data-risk=".5">0.5%</button><button type="button" data-risk="1">1%</button><button type="button" data-risk="2">2%</button></div><div class="mode-actions"><button class="reset-btn" type="button" id="resetRisk">Reset position sizing</button></div></div>
+<div class="row"><div class="field" id="lotField"><label for="lots">Lot size / quantity</label><input id="lots" type="number" min="0" step="any" value="1"><div class="mode-actions" style="margin:9px 0 0"><button class="reset-btn" type="button" id="resetFixed">Reset fixed-lot calculator</button></div></div><div class="field"><label for="leverage">Leverage (100 = 1:100)</label><input id="leverage" type="number" min="1" step="any" value="100"></div></div>
 <div class="row"><div class="field"><label for="side">Trade direction</label><select id="side"><option value="buy">Buy / Long</option><option value="sell">Sell / Short</option></select></div><div class="field"><label for="fees">Total fees / commission (round trip)</label><input id="fees" type="number" min="0" step="any" value="0"></div></div>
 <div class="row"><div class="field"><label for="entry">Entry price</label><input id="entry" type="number" min="0" step="any" value="25320"></div><div class="field"><label for="stop">Stop-loss price</label><input id="stop" type="number" min="0" step="any" value="25300"></div></div>
 <div class="row"><div class="field"><label for="target">Take-profit price</label><input id="target" type="number" min="0" step="any" value="25360"></div><div class="field"><label for="contract">Contract units per lot</label><input id="contract" type="number" min="0.000001" step="any" value="1"></div></div>
 <div class="row"><div class="field"><label for="pointValue">Account-currency value of 1.0 price move per lot</label><input id="pointValue" type="number" min="0.0000001" step="any" value="1"></div><div class="field"><label for="conversion">Notional conversion to account currency</label><input id="conversion" type="number" min="0.0000001" step="any" value="1"></div></div>
-<p class="hint">Point value is used directly for profit/loss. Contract units and conversion are used for estimated notional and margin. Enter the values from your broker's symbol specification.</p>
+<p class="hint">Changing the instrument loads illustrative example prices and contract assumptions for that market. These are not live quotes or guaranteed broker specifications. Confirm contract units, point value and currency conversion with your broker before trading.</p>
 </section>
 <section class="panel" aria-live="polite"><h2>Calculation results</h2><div id="invalid" class="empty" hidden>Complete the required fields to see results.</div><div id="results">
 <div class="big"><small id="headline">Estimated profit if take-profit hits</small><strong id="headlineValue">+$40.00</strong><div class="status" id="tradeLabel">BUY · 1.00 lot · NAS100</div></div>
@@ -125,7 +128,47 @@ const catalog={
 const num=id=>Number($(id).value),fmt=(v,d=2)=>Number.isFinite(v)?new Intl.NumberFormat("en-US",{maximumFractionDigits:d}).format(v):"—";
 const money=v=>{try{return new Intl.NumberFormat("en-US",{style:"currency",currency:$("currency").value,maximumFractionDigits:2}).format(v)}catch{return fmt(v)}};
 function sym(){return $("symbol").value==="CUSTOM"?$("custom").value.trim():$("symbol").value}
-function populate(){const s=$("symbol");s.replaceChildren();(catalog[$("asset").value]||catalog.Other).forEach(([label,items])=>{const g=document.createElement("optgroup");g.label=label;items.split(" ").forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v==="CUSTOM"?"Enter custom symbol":v;g.append(o)});s.append(g)});s.value=(catalog[$("asset").value]||catalog.Other)[0][1].split(" ")[0];$("custom").hidden=s.value!=="CUSTOM";calculate()}
+function instrumentPreset(asset,symbol){
+ const p={entry:100,step:1,contract:1,pointValue:1,conversion:1};
+ if(asset==="Forex"){
+  const fx={
+   EURUSD:[1.085,0.002,1,100000],GBPUSD:[1.27,0.002,1,100000],AUDUSD:[0.66,0.002,1,100000],NZDUSD:[0.61,0.002,1,100000],USDCAD:[1.36,0.002,1,100000],USDCHF:[0.90,0.002,1,100000],EURGBP:[0.85,0.002,1,100000],
+   USDJPY:[150,0.20,1/150,100000/150],EURJPY:[162,0.20,1/150,100000/150],GBPJPY:[190,0.20,1/150,100000/150],AUDJPY:[98,0.20,1/150,100000/150],CADJPY:[110,0.20,1/150,100000/150],CHFJPY:[170,0.20,1/150,100000/150],NZDJPY:[90,0.20,1/150,100000/150],USDINR:[83,0.10,1/83,100000/83]
+  };
+  const v=fx[symbol]||[1.10,0.002,1,100000];
+  p.entry=v[0];p.step=v[1];p.conversion=v[2];p.pointValue=v[3];p.contract=100000;
+  if(!fx[symbol] && !symbol.endsWith("USD")){p.conversion=1;p.pointValue=100000}
+ }else if(asset==="Indices / CFDs"){
+  const prices={NAS100:20000,US100:20000,US30:40000,DJ30:40000,US500:5000,SPX500:5000,US2000:2000,VIX:20,GER40:18000,DAX40:18000,UK100:8000,FTSE100:8000,FRA40:7500,CAC40:7500,EU50:5000,ESP35:11000,SWI20:12000,JPN225:38000,HK50:18000,HANGSENG:18000,AUS200:7800,ASX200:7800,CHINA50:12000,NIFTY50:24000,BANKNIFTY:52000,SENSEX:80000,FINNIFTY:23000};
+  p.entry=prices[symbol]||20000;p.step=p.entry>=50000?50:p.entry>=10000?20:10;p.contract=1;p.pointValue=1;
+ }else if(asset==="Metals / Commodities"){
+  const prices={XAUUSD:2300,GOLD:2300,XAGUSD:30,SILVER:30,COPPER:4,PLATINUM:1000,PALLADIUM:1000,WTI:75,USOIL:75,BRENT:80,UKOIL:80,NATGAS:3,COFFEE:200,COCOA:5000,SUGAR:20,COTTON:80,WHEAT:600,CORN:450,SOYBEANS:1200};
+  p.entry=prices[symbol]||100;p.step=(symbol==="XAUUSD"||symbol==="GOLD")?2:0.5;
+  if(symbol==="XAUUSD"||symbol==="GOLD"){p.contract=100;p.pointValue=100}
+  else if(symbol==="XAGUSD"||symbol==="SILVER"){p.contract=5000;p.pointValue=5000}
+  else if(symbol==="WTI"||symbol==="USOIL"||symbol==="BRENT"||symbol==="UKOIL"){p.contract=1000;p.pointValue=1000}
+  else {p.contract=1;p.pointValue=1}
+ }else if(asset==="Stocks"){
+  const prices={AAPL:200,MSFT:400,NVDA:120,AMZN:180,GOOGL:170,META:500,TSLA:250,"BRK.B":450,JPM:200,AMD:150,NFLX:650,INTC:30,AVGO:170,COST:900,WMT:90,RELIANCE:1400,TCS:4000,HDFCBANK:1600,ICICIBANK:1200,INFY:1700,ITC:450,SBIN:800,BHARTIARTL:1700,LT:3500,AXISBANK:1100,BHP:40,HSBA:7,SHELL:30,SAP:180,ASML:800,NESN:100,TM:200,SONY:90};
+  p.entry=prices[symbol]||100;p.step=Math.max(0.5,Math.round(p.entry*0.01*100)/100);p.contract=1;p.pointValue=1;
+ }else if(asset==="Futures"){
+  const prices={ES:5000,MES:5000,NQ:18000,MNQ:18000,YM:40000,MYM:40000,RTY:2000,M2K:2000,FDAX:18000,FESX:5000,CL:75,MCL:75,NG:3,QM:75,BZ:80,RB:2,HO:2,GC:2300,MGC:2300,SI:30,SIL:30,HG:4,PL:1000,PA:1000,ZC:450,ZW:600,ZS:1200,ZM:350,ZL:50,KC:200,CC:5000,SB:20,CT:80,ZB:110,ZN:110,ZF:108,ZT:103,"6E":1.08,"6B":1.27,"6J":0.0067,"6A":0.66,"6C":0.74,"6S":1.12,DX:105};
+  p.entry=prices[symbol]||100;p.step=(symbol==="ES"||symbol==="MES"||symbol==="NQ"||symbol==="MNQ")?0.5:Math.max(0.1,p.entry*0.001);p.contract=1;p.pointValue=1;
+ }else if(asset==="Crypto"){
+  const prices={BTCUSD:50000,BTCUSDT:50000,ETHUSD:3000,ETHUSDT:3000,SOLUSD:150,SOLUSDT:150,XRPUSD:0.6,XRPUSDT:0.6,BNBUSD:500,BNBUSDT:500,ADAUSD:0.5,ADAUSDT:0.5,DOGEUSD:0.15,DOGEUSDT:0.15,AVAXUSD:30,AVAXUSDT:30,LINKUSD:15,LINKUSDT:15,DOTUSD:7,DOTUSDT:7,LTCUSD:80};
+  p.entry=prices[symbol]||100;p.step=Math.max(0.01,p.entry*0.01);p.contract=1;p.pointValue=1;
+ }
+ p.stop=p.entry-p.step;p.target=p.entry+p.step*2;return p;
+}
+function applyInstrumentPreset(){
+ const p=instrumentPreset($("asset").value,sym());
+ $("entry").value=p.entry;$("stop").value=p.stop;$("target").value=p.target;
+ $("contract").value=p.contract;$("pointValue").value=p.pointValue;$("conversion").value=p.conversion;
+ $("side").value="buy";
+}
+function resetRiskMode(){$("riskMode").value="cash";$("risk").value=75;applyInstrumentPreset();$("fees").value=0;calculate()}
+function resetFixedMode(){$("lots").value=1;applyInstrumentPreset();$("fees").value=0;calculate()}
+function populate(){const s=$("symbol");s.replaceChildren();(catalog[$("asset").value]||catalog.Other).forEach(([label,items])=>{const g=document.createElement("optgroup");g.label=label;items.split(" ").forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v==="CUSTOM"?"Enter custom symbol":v;g.append(o)});s.append(g)});s.value=(catalog[$("asset").value]||catalog.Other)[0][1].split(" ")[0];$("custom").hidden=s.value!=="CUSTOM";applyInstrumentPreset();calculate()}
 function theme(v){document.documentElement.dataset.theme=v==="system"?(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"):v;try{localStorage.setItem("lotLogicProTheme",v)}catch{}}
 try{$("theme").value=localStorage.getItem("lotLogicProTheme")||"system"}catch{}theme($("theme").value);$("theme").addEventListener("change",()=>theme($("theme").value));
 function sync(){const riskMode=$("mode").value==="risk";$("riskFields").hidden=!riskMode;$("riskChips").hidden=!riskMode;$("lotField").hidden=riskMode;$("risk").disabled=!riskMode;$("lots").disabled=riskMode}
@@ -147,6 +190,6 @@ $("percentages").textContent=fmt(loss/bal*100,2)+"% risk · "+fmt(gain/bal*100,2
 $("headline").textContent="Estimated net profit if take-profit hits";$("headlineValue").textContent=(gain>=0?"+":"−")+money(Math.abs(gain));$("headlineValue").style.color=gain>=0?"var(--green)":"var(--red)";
 $("tradeLabel").textContent=(buy?"BUY / LONG":"SELL / SHORT")+" · "+fmt(qty,4)+" · "+symbol;
 const warnings=[];if(!slCorrect)warnings.push("Stop-loss is on the wrong side of entry for the selected direction.");if(!tpCorrect)warnings.push("Take-profit is on the wrong side of entry for the selected direction.");if(margin>bal)warnings.push("Estimated margin exceeds your account balance. Actual broker margin may differ.");if(loss>bal)warnings.push("The estimated stop-loss amount is greater than your account balance.");if(gain<0)warnings.push("Fees are greater than the gross profit at the target.");if(mode==="risk"&&qty===0)warnings.push("Your risk budget is too small to open the minimum 0.01 lot. Increase risk or reduce fees / stop distance.");if(mode==="risk"&&loss>riskBudget+.01)warnings.push("Estimated loss exceeds your selected risk budget.");$("warnings").replaceChildren(...warnings.map(t=>{const d=document.createElement("div");d.className="warning";d.textContent=t;return d}));ladder(entry,sl,tp)}
-ids.forEach(id=>$(id).addEventListener("input",calculate));$("asset").addEventListener("change",populate);$("symbol").addEventListener("change",()=>{$("custom").hidden=$("symbol").value!=="CUSTOM";calculate()});$("custom").addEventListener("input",calculate);$("mode").addEventListener("change",calculate);$("riskMode").addEventListener("change",calculate);$("riskChips").addEventListener("click",e=>{if(e.target.dataset.risk){$("riskMode").value="percent";$("risk").value=e.target.dataset.risk;calculate()}});populate();
+ids.forEach(id=>$(id).addEventListener("input",calculate));$("asset").addEventListener("change",populate);$("symbol").addEventListener("change",()=>{$("custom").hidden=$("symbol").value!=="CUSTOM";applyInstrumentPreset();calculate()});$("custom").addEventListener("input",calculate);$("mode").addEventListener("change",calculate);$("riskMode").addEventListener("change",calculate);$("riskChips").addEventListener("click",e=>{if(e.target.dataset.risk){$("riskMode").value="percent";$("risk").value=e.target.dataset.risk;calculate()}});$("resetRisk").addEventListener("click",resetRiskMode);$("resetFixed").addEventListener("click",resetFixedMode);populate();
 })();
 </script></body></html>
