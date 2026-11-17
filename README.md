@@ -105,7 +105,9 @@ Choose an asset class:
 
 Then select an instrument from its grouped list. For Other, select the custom instrument option and type the symbol yourself.
 
-The symbol catalogue is a convenience list, not an official broker instrument list. Brokers may use different symbol names and contract specifications.
+When you change the selected instrument, LotLogic Pro loads **illustrative starting values** for entry, stop-loss, take-profit, contract units, point value and notional conversion where a preset is available. They are sample assumptions only — not live quotes or verified broker specifications. You can edit every value before calculating. The custom instrument option starts with generic editable values.
+
+The symbol catalogue is a convenience list, not an official broker instrument list. Brokers may use different symbol names and contract specifications. Instrument presets are approximate examples intended to prevent obviously mismatched sample prices when switching asset classes. They do not establish a broker's true contract multiplier, point value, tick size, quote currency or current price.
 
 ### Step 3 — Enter account details
 
@@ -156,6 +158,8 @@ When Trade calculator (enter lot size) is selected:
 4. Review estimated loss at the stop, profit at the target, margin and other results.
 
 This mode does not choose a lot size. It calculates estimates using the quantity you enter.
+
+Each calculation mode has its own reset button. **Reset position sizing** restores the cash-risk example and the selected instrument's sample trade values. **Reset fixed-lot calculator** restores a 1.00 lot example and the selected instrument's sample trade values. Both preserve the account balance, account currency and leverage so your account setup is not discarded.
 
 ### Step 7 — Understand the results
 
