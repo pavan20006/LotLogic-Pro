@@ -89,7 +89,12 @@ select{cursor:pointer}
 <div class="field"><label for="mode">Calculation mode</label><select id="mode"><option value="risk">Position sizing (risk-based)</option><option value="fixed">Trade calculator (enter lot size)</option></select></div>
 <div class="row"><div class="field"><label for="asset">Asset class</label><select id="asset"><option>Forex</option><option>Indices / CFDs</option><option>Metals / Commodities</option><option>Stocks</option><option>Futures</option><option>Crypto</option><option>Other</option></select></div><div class="field"><label for="symbol">Instrument / symbol</label><select id="symbol"></select><input id="custom" placeholder="Enter custom symbol" hidden></div></div>
 <div class="row"><div class="field"><label for="balance">Account balance</label><input id="balance" type="number" min="0" step="any" value="3000"></div><div class="field"><label for="currency">Account currency</label><select id="currency"><option>USD</option><option>INR</option><option>EUR</option><option>GBP</option><option>AUD</option><option>CAD</option><option>JPY</option><option>CHF</option></select></div></div>
-<div id="riskFields"><div class="row"><div class="field"><label for="riskMode">Risk method</label><select id="riskMode"><option value="cash">Fixed cash risk</option><option value="percent">Percentage of account</option></select></div><div class="field"><label for="risk">Risk amount</label><input id="risk" type="number" min="0" step="any" value="75"></div></div><div class="chips" id="riskChips"><button type="button" data-risk=".5">0.5%</button><button type="button" data-risk="1">1%</button><button type="button" data-risk="2">2%</button></div><div class="mode-actions"><button class="reset-btn" type="button" id="resetRisk">Reset position sizing</button></div></div>
+<div id="riskFields"><div class="row"><div class="field"><label for="riskMode">Risk method</label><select id="riskMode"><option value="cash">Fixed cash risk</option><option value="percent">Percentage of account</option></select></div><div class="field"><label for="risk">Risk amount</label><input id="risk" type="number" min="0" step="any" value="75"></div></div><div class="row">
+  <div class="field"><label for="minLot">Minimum lot / quantity</label><input id="minLot" type="number" step="any" value="0.01"></div>
+  <div class="field"><label for="lotStep">Lot step / increment</label><input id="lotStep" type="number" step="any" value="0.01"></div>
+</div>
+<p class="hint">Enter your broker's minimum size and the increment above that minimum.</p>
+<div class="chips" id="riskChips"><button type="button" data-risk=".5">0.5%</button><button type="button" data-risk="1">1%</button><button type="button" data-risk="2">2%</button></div><div class="mode-actions"><button class="reset-btn" type="button" id="resetRisk">Reset position sizing</button></div></div>
 <div class="row"><div class="field" id="lotField"><label for="lots">Lot size / quantity</label><input id="lots" type="number" min="0" step="any" value="1"><div class="mode-actions" style="margin:9px 0 0"><button class="reset-btn" type="button" id="resetFixed">Reset fixed-lot calculator</button></div></div><div class="field"><label for="leverage">Leverage (100 = 1:100)</label><input id="leverage" type="number" min="1" step="any" value="100"></div></div>
 <div class="row"><div class="field"><label for="side">Trade direction</label><select id="side"><option value="buy">Buy / Long</option><option value="sell">Sell / Short</option></select></div><div class="field"><label for="fees">Total fees / commission (round trip)</label><input id="fees" type="number" min="0" step="any" value="0"></div></div>
 <div class="row"><div class="field"><label for="entry">Entry price</label><input id="entry" type="number" min="0" step="any" value="25320"></div><div class="field"><label for="stop">Stop-loss price</label><input id="stop" type="number" min="0" step="any" value="25300"></div></div>
@@ -116,7 +121,7 @@ select{cursor:pointer}
 <p class="foot">Estimates only. This is not connected to MT5 or your broker. Broker point value, contract size, account-currency conversion, margin method, lot step and fees vary by symbol and provider. Spread, slippage, swaps, funding, taxes, gaps and liquidation rules are not automatically included.</p>
 </section></div></main>
 <script>
-(()=>{const $=id=>document.getElementById(id),ids=["mode","asset","symbol","custom","balance","currency","riskMode","risk","lots","leverage","side","fees","entry","stop","target","contract","pointValue","conversion"];
+(()=>{const $=id=>document.getElementById(id),ids=["mode","asset","symbol","custom","balance","currency","riskMode","risk","minLot","lotStep","lots","leverage","side","fees","entry","stop","target","contract","pointValue","conversion"];
 const catalog={
 "Forex":[["Major pairs","EURUSD GBPUSD USDJPY USDCHF AUDUSD NZDUSD USDCAD"],["Minor pairs","EURGBP EURJPY EURCHF EURAUD EURNZD EURCAD GBPJPY GBPCHF GBPAUD GBPNZD GBPCAD AUDJPY AUDCHF AUDNZD AUDCAD NZDJPY NZDCHF NZDCAD CADJPY CADCHF CHFJPY"],["Exotic pairs","USDINR USDSGD USDHKD USDNOK USDSEK USDDKK USDPLN USDCZK USDHUF USDCNH USDTRY USDZAR USDMXN USDKRW EURPLN EURHUF EURCZK EURTRY EURZAR EURMXN EURSGD EURHKD GBPPLN GBPHUF GBPTRY GBPZAR GBPSGD GBPHKD AUDSGD AUDHKD AUDNOK AUDSEK AUDZAR NZDSGD NZDHKD NZDNOK NZDSEK CADSGD CADHKD CADNOK CADSEK CHFSGD CHFNOK CHFSEK SGDJPY HKDJPY NOKJPY SEKJPY ZARJPY MXNJPY SGDCHF SGDHKD NOKSEK NOKDKK SEKDKK"]],
 "Indices / CFDs":[["United States","NAS100 US100 US30 DJ30 US500 SPX500 US2000 VIX"],["Europe","GER40 DAX40 UK100 FTSE100 FRA40 CAC40 EU50 ESP35 SWI20"],["Asia-Pacific","JPN225 HK50 HANGSENG AUS200 ASX200 CHINA50"],["India","NIFTY50 BANKNIFTY SENSEX FINNIFTY"]],
@@ -178,23 +183,55 @@ function theme(v){document.documentElement.dataset.theme=v==="system"?(matchMedi
 try{$("theme").value=localStorage.getItem("lotLogicProTheme")||"system"}catch{}theme($("theme").value);$("theme").addEventListener("change",()=>theme($("theme").value));
 function sync(){const riskMode=$("mode").value==="risk";$("riskFields").hidden=!riskMode;$("riskChips").hidden=!riskMode;$("lotField").hidden=riskMode;$("risk").disabled=!riskMode;$("lots").disabled=riskMode}
 function ladder(entry,sl,tp){const L=$("ladder");L.replaceChildren();const vals=[entry,sl,tp],lo=Math.min(...vals),hi=Math.max(...vals),pad=(hi-lo)*.12||1,low=lo-pad,high=hi+pad,pos=p=>(high-p)/(high-low)*100;function zone(a,b,c){const z=document.createElement("div");z.className="zone "+c;z.style.top=Math.min(pos(a),pos(b))+"%";z.style.height=Math.abs(pos(a)-pos(b))+"%";L.append(z)}zone(entry,sl,"r");zone(entry,tp,"g");function mark(p,c,t){const m=document.createElement("div");m.className="mark "+c;m.style.top=pos(p)+"%";const i=document.createElement("i"),s=document.createElement("span"),e=document.createElement("em");s.append(document.createTextNode(t+" "));e.textContent=fmt(p,6);s.append(e);m.append(i,s);L.append(m)}mark(tp,"t","Target");mark(entry,"e","Entry");mark(sl,"s","Stop")}
+function decimalPlaces(value){
+  const [mantissa,exponent="0"]=String(value).split("e");
+  return Math.max(0,(mantissa.split(".")[1]?.length||0)-Number(exponent));
+}
 function calculate(){sync();const bal=num("balance"),riskInput=num("risk"),lotsInput=num("lots"),lev=num("leverage"),fees=num("fees"),entry=num("entry"),sl=num("stop"),tp=num("target"),contract=num("contract"),pv=num("pointValue"),conv=num("conversion"),buy=$("side").value==="buy",mode=$("mode").value,symbol=sym();
 const riskBudget=$("riskMode").value==="percent"?bal*riskInput/100:riskInput;
 const valid=symbol&&bal>0&&lev>0&&fees>=0&&entry>0&&sl>=0&&tp>=0&&entry!==sl&&entry!==tp&&contract>0&&pv>0&&conv>0&&(mode==="fixed"?lotsInput>0:riskBudget>0&&riskInput>0);
 if(!valid){$("results").hidden=true;$("invalid").hidden=false;let msg="Complete the required fields with valid positive values.";if(mode==="risk"&&!(riskInput>0))msg="Enter your risk amount or percentage to calculate position size.";else if(mode==="fixed"&&!(lotsInput>0))msg="Enter the lot size / quantity you want to trade.";else if(entry===sl||entry===tp)msg="Entry, stop-loss and take-profit must be different prices.";$("invalid").textContent=msg;return}
 $("results").hidden=false;$("invalid").hidden=true;
 const slCorrect=buy?sl<entry:sl>entry,tpCorrect=buy?tp>entry:tp<entry,slDist=Math.abs(entry-sl),tpDist=Math.abs(tp-entry);
-let qty=mode==="fixed"?lotsInput:Math.max(0,Math.floor(((riskBudget-fees)/(slDist*pv))*100+1e-9)/100);
+let qty=lotsInput;
+let quantityDecimals=4;
+if(mode==="risk"){
+  const minLot=num("minLot"),lotStep=num("lotStep");
+  const stopLossPerLot=slDist*pv;
+  const maxLots=(riskBudget-fees)/stopLossPerLot;
+  const tolerance=Number.EPSILON*8*Math.max(Math.abs(maxLots),minLot);
+  let message="";
+  if(!Number.isFinite(minLot)||!Number.isFinite(lotStep)||minLot<=0||lotStep<=0){
+    message="Enter a positive minimum lot and lot step from your broker.";
+  }else if(!Number.isFinite(maxLots)){
+    message="Check the stop distance, point value and risk budget.";
+  }else if(maxLots+tolerance<minLot){
+    message="Your risk budget is too small for the minimum size of "+fmt(minLot,20)+
+      ". Estimated loss at that size is "+money(minLot*stopLossPerLot+fees)+", including fees.";
+  }else{
+    const steps=Math.floor((maxLots-minLot+Math.min(tolerance,lotStep*1e-8))/lotStep);
+    qty=minLot+Math.max(0,steps)*lotStep;
+    quantityDecimals=Math.min(20,Math.max(4,decimalPlaces(minLot),decimalPlaces(lotStep)));
+    if(!Number.isFinite(qty))message="Check the minimum lot and lot step for this instrument.";
+  }
+  if(message){
+    $("results").hidden=true;
+    $("invalid").hidden=false;
+    $("invalid").textContent=message;
+    return;
+  }
+}
+const quantityText=fmt(qty,quantityDecimals);
 const grossLoss=qty*slDist*pv,grossGain=qty*tpDist*pv,loss=grossLoss+fees,gain=grossGain-fees;
 const notional=qty*contract*entry*conv,margin=notional/lev,rr=loss>0?gain/loss:NaN;
-$("position").textContent=fmt(qty,4)+(mode==="fixed"?" lots / units":" lots / units (risk-sized)");
+$("position").textContent=quantityText+(mode==="fixed"?" lots / units":" lots / units (risk-sized)");
 $("notional").textContent=money(notional);$("loss").textContent="−"+money(loss);$("profit").textContent=(gain>=0?"+":"−")+money(Math.abs(gain));
 $("rr").textContent=Number.isFinite(rr)&&rr>0?"1 : "+fmt(rr,2):"—";$("be").textContent=Number.isFinite(rr)&&rr>0?fmt(100/(1+rr),1)+"%":"—";
 $("margin").textContent=money(margin);$("afterSL").textContent=money(bal-loss);$("afterTP").textContent=money(bal+gain);
 $("percentages").textContent=fmt(loss/bal*100,2)+"% risk · "+fmt(gain/bal*100,2)+"% reward";$("exposure").textContent=fmt(notional/bal*100,1)+"%";$("marginLevel").textContent=margin>0?fmt(bal/margin*100,1)+"%":"—";
 $("headline").textContent="Estimated net profit if take-profit hits";$("headlineValue").textContent=(gain>=0?"+":"−")+money(Math.abs(gain));$("headlineValue").style.color=gain>=0?"var(--green)":"var(--red)";
-$("tradeLabel").textContent=(buy?"BUY / LONG":"SELL / SHORT")+" · "+fmt(qty,4)+" · "+symbol;
-const warnings=[];if(!slCorrect)warnings.push("Stop-loss is on the wrong side of entry for the selected direction.");if(!tpCorrect)warnings.push("Take-profit is on the wrong side of entry for the selected direction.");if(margin>bal)warnings.push("Estimated margin exceeds your account balance. Actual broker margin may differ.");if(loss>bal)warnings.push("The estimated stop-loss amount is greater than your account balance.");if(gain<0)warnings.push("Fees are greater than the gross profit at the target.");if(mode==="risk"&&qty===0)warnings.push("Your risk budget is too small to open the minimum 0.01 lot. Increase risk or reduce fees / stop distance.");if(mode==="risk"&&loss>riskBudget+.01)warnings.push("Estimated loss exceeds your selected risk budget.");$("warnings").replaceChildren(...warnings.map(t=>{const d=document.createElement("div");d.className="warning";d.textContent=t;return d}));ladder(entry,sl,tp)}
+$("tradeLabel").textContent=(buy?"BUY / LONG":"SELL / SHORT")+" · "+quantityText+" · "+symbol;
+const warnings=[];if(!slCorrect)warnings.push("Stop-loss is on the wrong side of entry for the selected direction.");if(!tpCorrect)warnings.push("Take-profit is on the wrong side of entry for the selected direction.");if(margin>bal)warnings.push("Estimated margin exceeds your account balance. Actual broker margin may differ.");if(loss>bal)warnings.push("The estimated stop-loss amount is greater than your account balance.");if(gain<0)warnings.push("Fees are greater than the gross profit at the target.");if(mode==="risk"&&loss>riskBudget+.01)warnings.push("Estimated loss exceeds your selected risk budget.");$("warnings").replaceChildren(...warnings.map(t=>{const d=document.createElement("div");d.className="warning";d.textContent=t;return d}));ladder(entry,sl,tp)}
 ids.forEach(id=>$(id).addEventListener("input",calculate));$("asset").addEventListener("change",populate);$("symbol").addEventListener("change",()=>{$("custom").hidden=$("symbol").value!=="CUSTOM";applyInstrumentPreset();calculate()});$("custom").addEventListener("input",calculate);$("mode").addEventListener("change",calculate);$("riskMode").addEventListener("change",calculate);$("riskChips").addEventListener("click",e=>{if(e.target.dataset.risk){$("riskMode").value="percent";$("risk").value=e.target.dataset.risk;calculate()}});$("resetRisk").addEventListener("click",resetRiskMode);$("resetFixed").addEventListener("click",resetFixedMode);populate();
 })();
 </script></body></html>
