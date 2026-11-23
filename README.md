@@ -147,7 +147,7 @@ When Position sizing (risk-based) is selected:
 4. Enter the entry and stop-loss prices to define the stop distance.
 5. Review the calculated position size and estimated loss.
 
-This version rounds risk-sized quantity down to 0.01 increments. If the risk budget is too small to produce at least 0.01, the app warns that the result rounds to zero.
+Enter your broker’s minimum lot and lot step. Both fields default to 0.01. The calculator picks the largest allowed quantity within your risk budget, starting at the minimum and adding whole increments. If the minimum exceeds your budget, the calculator shows its estimated loss including fees.
 
 ### Step 6B — Use fixed-lot trade calculation
 
@@ -205,7 +205,7 @@ The current implementation uses these calculation conventions:
 - Estimated net profit = gross take-profit amount − entered fees.
 - Estimated notional = quantity × contract units × entry × quote-to-account exchange rate.
 - Estimated margin = estimated notional ÷ leverage.
-- Risk-sized quantity = (risk budget − fees) ÷ (stop distance × point value × quote-to-account exchange rate), rounded down to 0.01 increments.
+- Unrounded risk-sized quantity = (risk budget − fees) ÷ (stop distance × point value × quote-to-account exchange rate). The calculator rounds down to a permitted quantity using the minimum lot and lot step.
 
 The calculator applies the same quote-to-account rate to gross P&L and notional. Margin uses the converted notional, and fees are applied directly in the account currency.
 
@@ -223,7 +223,7 @@ This version does not automatically retrieve:
 - Live exchange rates.
 - Broker-specific margin tiers or margin rules.
 
-Spread, slippage, swaps, funding, taxes, price gaps, commissions not entered by the user, liquidation rules, minimum/maximum volume and broker lot-step constraints can affect real results. The calculator's 0.01 sizing increment may not match every instrument's permitted volume step.
+Spread, slippage, swaps, funding, taxes, price gaps, commissions not entered by the user, liquidation rules, minimum/maximum volume and broker lot-step constraints can affect real results. Configure the minimum and step for risk-based sizing. Check fixed quantities and maximum volume against your broker’s rules.
 
 Estimated margin uses a simplified notional-divided-by-leverage formula and may differ from a broker's margin method. The accuracy of results depends on the inputs and assumptions. Always verify the values against your broker's platform and specifications before placing a trade. Trading can result in losses, including losses greater than the planned amount in fast-moving or gapping markets.
 
@@ -232,7 +232,7 @@ Estimated margin uses a simplified notional-divided-by-leverage formula and may 
 Ideas for later versions include:
 
 - Save and load user-defined instrument specifications.
-- Add configurable lot steps and minimum/maximum volume rules.
+- Apply broker quantity rules to fixed-lot calculations and add a maximum volume setting.
 - Add more account currencies and conversion helpers.
 - Add downloadable calculation reports.
 - Add automated tests for the calculation formulas.
