@@ -88,21 +88,22 @@ select{cursor:pointer}
 <section class="panel"><h2>Trade inputs</h2>
 <div class="field"><label for="mode">Calculation mode</label><select id="mode"><option value="risk">Position sizing (risk-based)</option><option value="fixed">Trade calculator (enter lot size)</option></select></div>
 <div class="row"><div class="field"><label for="asset">Asset class</label><select id="asset"><option>Forex</option><option>Indices / CFDs</option><option>Metals / Commodities</option><option>Stocks</option><option>Futures</option><option>Crypto</option><option>Other</option></select></div><div class="field"><label for="symbol">Instrument / symbol</label><select id="symbol"></select><input id="custom" placeholder="Enter custom symbol" hidden></div></div>
-<div class="row"><div class="field"><label for="balance">Account balance</label><input id="balance" type="number" min="0" step="any" value="3000"></div><div class="field"><label for="currency">Account currency</label><select id="currency"><option>USD</option><option>INR</option><option>EUR</option><option>GBP</option><option>AUD</option><option>CAD</option><option>JPY</option><option>CHF</option></select></div></div>
-<div id="riskFields"><div class="row"><div class="field"><label for="riskMode">Risk method</label><select id="riskMode"><option value="cash">Fixed cash risk</option><option value="percent">Percentage of account</option></select></div><div class="field"><label for="risk">Risk amount</label><input id="risk" type="number" min="0" step="any" value="75"></div></div><div class="row">
+<div class="row"><div class="field"><label for="balance" id="balanceLabel">Account balance (USD)</label><input id="balance" type="number" min="0" step="any" value="3000"></div><div class="field"><label for="currency">Account currency</label><select id="currency"><option value="USD" selected>USD (US dollar)</option><option>INR</option><option>EUR</option><option>GBP</option><option>AUD</option><option>CAD</option><option>JPY</option><option>CHF</option></select></div></div>
+<div id="riskFields"><div class="row"><div class="field"><label for="riskMode">Risk method</label><select id="riskMode"><option value="cash">Fixed cash risk</option><option value="percent">Percentage of account</option></select></div><div class="field"><label for="risk" id="riskLabel">Risk amount (USD)</label><input id="risk" type="number" min="0" step="any" value="75"></div></div><div class="row">
   <div class="field"><label for="minLot">Minimum lot / quantity</label><input id="minLot" type="number" step="any" value="0.01"></div>
   <div class="field"><label for="lotStep">Lot step / increment</label><input id="lotStep" type="number" step="any" value="0.01"></div>
 </div>
 <p class="hint">Enter your broker's minimum size and the increment above that minimum.</p>
 <div class="chips" id="riskChips"><button type="button" data-risk=".5">0.5%</button><button type="button" data-risk="1">1%</button><button type="button" data-risk="2">2%</button></div><div class="mode-actions"><button class="reset-btn" type="button" id="resetRisk">Reset position sizing</button></div></div>
 <div class="row"><div class="field" id="lotField"><label for="lots">Lot size / quantity</label><input id="lots" type="number" min="0" step="any" value="1"><div class="mode-actions" style="margin:9px 0 0"><button class="reset-btn" type="button" id="resetFixed">Reset fixed-lot calculator</button></div></div><div class="field"><label for="leverage">Leverage (100 = 1:100)</label><input id="leverage" type="number" min="1" step="any" value="100"></div></div>
-<div class="row"><div class="field"><label for="side">Trade direction</label><select id="side"><option value="buy">Buy / Long</option><option value="sell">Sell / Short</option></select></div><div class="field"><label for="fees">Total fees / commission (round trip)</label><input id="fees" type="number" min="0" step="any" value="0"></div></div>
+<div class="row"><div class="field"><label for="side">Trade direction</label><select id="side"><option value="buy">Buy / Long</option><option value="sell">Sell / Short</option></select></div><div class="field"><label for="fees" id="feesLabel">Round-trip fees (USD)</label><input id="fees" type="number" min="0" step="any" value="0"></div></div>
 <div class="row"><div class="field"><label for="entry">Entry price</label><input id="entry" type="number" min="0" step="any" value="25320"></div><div class="field"><label for="stop">Stop-loss price</label><input id="stop" type="number" min="0" step="any" value="25300"></div></div>
 <div class="row"><div class="field"><label for="target">Take-profit price</label><input id="target" type="number" min="0" step="any" value="25360"></div><div class="field"><label for="contract">Contract units per lot</label><input id="contract" type="number" min="0.000001" step="any" value="1"></div></div>
-<div class="row"><div class="field"><label for="pointValue">Account-currency value of 1.0 price move per lot</label><input id="pointValue" type="number" min="0.0000001" step="any" value="1"></div><div class="field"><label for="conversion">Notional conversion to account currency</label><input id="conversion" type="number" min="0.0000001" step="any" value="1"></div></div>
-<p class="hint">Changing the instrument loads illustrative example prices and contract assumptions for that market. These are not live quotes or guaranteed broker specifications. Confirm contract units, point value and currency conversion with your broker before trading.</p>
+<div class="field"><label for="pointValue">Value of a 1.0 price move per lot, in quote currency</label><input id="pointValue" type="number" min="0.0000001" step="any" value="1"></div>
+<div class="row"><div class="field"><label for="quoteCurrency">Instrument quote currency</label><input id="quoteCurrency" type="text" maxlength="5" placeholder="e.g. USD" spellcheck="false"></div><div class="field" id="conversionField" hidden><label for="conversion">Quote-to-account exchange rate</label><input id="conversion" type="number" min="0" step="any" aria-describedby="conversionHint"><p id="conversionHint" class="hint"></p></div></div>
+<p class="hint">Changing the instrument loads illustrative example prices and contract assumptions for that market. These are not live quotes or guaranteed broker specifications. Confirm contract units, point value and quote currency with your broker before trading.</p>
 </section>
-<section class="panel" aria-live="polite"><h2>Calculation results</h2><div id="invalid" class="empty" hidden>Complete the required fields to see results.</div><div id="results">
+<section class="panel" aria-live="polite"><h2 id="resultsHeading">Calculation results (USD)</h2><div id="invalid" class="empty" hidden>Complete the required fields to see results.</div><div id="results">
 <div class="big"><small id="headline">Estimated profit if take-profit hits</small><strong id="headlineValue">+$40.00</strong><div class="status" id="tradeLabel">BUY · 1.00 lot · NAS100</div></div>
 <div class="summary">
 <div class="tile"><span>Calculated position size</span><b id="position">—</b></div>
@@ -121,7 +122,7 @@ select{cursor:pointer}
 <p class="foot">Estimates only. This is not connected to MT5 or your broker. Broker point value, contract size, account-currency conversion, margin method, lot step and fees vary by symbol and provider. Spread, slippage, swaps, funding, taxes, gaps and liquidation rules are not automatically included.</p>
 </section></div></main>
 <script>
-(()=>{const $=id=>document.getElementById(id),ids=["mode","asset","symbol","custom","balance","currency","riskMode","risk","minLot","lotStep","lots","leverage","side","fees","entry","stop","target","contract","pointValue","conversion"];
+(()=>{const $=id=>document.getElementById(id),ids=["mode","asset","symbol","custom","balance","riskMode","risk","minLot","lotStep","lots","leverage","side","fees","entry","stop","target","contract","pointValue","quoteCurrency","conversion"];
 const catalog={
 "Forex":[["Major pairs","EURUSD GBPUSD USDJPY USDCHF AUDUSD NZDUSD USDCAD"],["Minor pairs","EURGBP EURJPY EURCHF EURAUD EURNZD EURCAD GBPJPY GBPCHF GBPAUD GBPNZD GBPCAD AUDJPY AUDCHF AUDNZD AUDCAD NZDJPY NZDCHF NZDCAD CADJPY CADCHF CHFJPY"],["Exotic pairs","USDINR USDSGD USDHKD USDNOK USDSEK USDDKK USDPLN USDCZK USDHUF USDCNH USDTRY USDZAR USDMXN USDKRW EURPLN EURHUF EURCZK EURTRY EURZAR EURMXN EURSGD EURHKD GBPPLN GBPHUF GBPTRY GBPZAR GBPSGD GBPHKD AUDSGD AUDHKD AUDNOK AUDSEK AUDZAR NZDSGD NZDHKD NZDNOK NZDSEK CADSGD CADHKD CADNOK CADSEK CHFSGD CHFNOK CHFSEK SGDJPY HKDJPY NOKJPY SEKJPY ZARJPY MXNJPY SGDCHF SGDHKD NOKSEK NOKDKK SEKDKK"]],
 "Indices / CFDs":[["United States","NAS100 US100 US30 DJ30 US500 SPX500 US2000 VIX"],["Europe","GER40 DAX40 UK100 FTSE100 FRA40 CAC40 EU50 ESP35 SWI20"],["Asia-Pacific","JPN225 HK50 HANGSENG AUS200 ASX200 CHINA50"],["India","NIFTY50 BANKNIFTY SENSEX FINNIFTY"]],
@@ -133,8 +134,41 @@ const catalog={
 const num=id=>Number($(id).value),fmt=(v,d=2)=>Number.isFinite(v)?new Intl.NumberFormat("en-US",{maximumFractionDigits:d}).format(v):"—";
 const money=v=>{try{return new Intl.NumberFormat("en-US",{style:"currency",currency:$("currency").value,maximumFractionDigits:2}).format(v)}catch{return fmt(v)}};
 function sym(){return $("symbol").value==="CUSTOM"?$("custom").value.trim():$("symbol").value}
+const nonUsdQuotes={
+ "Indices / CFDs":{
+  EUR:"GER40 DAX40 FRA40 CAC40 EU50 ESP35",GBP:"UK100 FTSE100",CHF:"SWI20",
+  JPY:"JPN225",HKD:"HK50 HANGSENG",AUD:"AUS200 ASX200",CNY:"CHINA50",
+  INR:"NIFTY50 BANKNIFTY SENSEX FINNIFTY"
+ },
+ Stocks:{
+  INR:"RELIANCE TCS HDFCBANK ICICIBANK INFY ITC SBIN BHARTIARTL LT AXISBANK",
+  AUD:"BHP",GBP:"HSBA SHELL",EUR:"SAP ASML",CHF:"NESN"
+ },
+ Futures:{EUR:"FDAX FESX"}
+};
+function presetQuoteCurrency(asset,symbol){
+ if(asset==="Other")return "";
+ if(asset==="Forex")return symbol.slice(3);
+ if(asset==="Crypto")return symbol.endsWith("USDT")?"USDT":"USD";
+ return Object.entries(nonUsdQuotes[asset]||{}).find(([,symbols])=>symbols.split(" ").includes(symbol))?.[0]||"USD";
+}
+let previousCurrencyPair;
+function syncConversion(quote,account){
+ const rate=$("conversion"),hint=$("conversionHint");
+ const pair=quote+"/"+account;
+ if(pair===previousCurrencyPair)return;
+ previousCurrencyPair=pair;
+ const needsRate=Boolean(quote)&&quote!==account;
+ $("conversionField").hidden=!needsRate;
+ rate.disabled=!needsRate;
+ rate.value=quote===account?"1":"";
+ hint.textContent=needsRate?"Enter how many "+account+" equal 1 "+quote+".":"";
+ $("balanceLabel").textContent="Account balance ("+account+")";
+ $("feesLabel").textContent="Round-trip fees ("+account+")";
+ $("resultsHeading").textContent="Calculation results ("+account+")";
+}
 function instrumentPreset(asset,symbol){
- const p={entry:100,step:1,contract:1,pointValue:1,conversion:1};
+ const p={entry:100,step:1,contract:1,pointValue:1};
  if(asset==="Forex"){
   const fx={
    EURUSD:[1.085,0.002],GBPUSD:[1.27,0.002],AUDUSD:[0.66,0.002],NZDUSD:[0.61,0.002],
@@ -142,9 +176,7 @@ function instrumentPreset(asset,symbol){
    USDJPY:[150,0.20],EURJPY:[162,0.20],GBPJPY:[190,0.20],AUDJPY:[98,0.20],CADJPY:[110,0.20],CHFJPY:[170,0.20],NZDJPY:[90,0.20],USDINR:[83,0.10]
   };
   const v=fx[symbol]||[1.10,0.002];
-  const quote=symbol.length===6?symbol.slice(3,6):"USD";
-  const quoteToUSD={USD:1,JPY:1/150,CAD:1/1.36,CHF:1/0.90,GBP:1.27,AUD:0.66,NZD:0.61,INR:1/83,EUR:1.085,SGD:0.74,HKD:1/7.8,NOK:1/10.5,SEK:1/10.5,PLN:1/4,TRY:1/32,ZAR:1/18,MXN:1/17,CNH:1/7.2,CZK:1/23,HUF:1/360,DKK:1/6.9,KRW:1/1350};
-  p.entry=v[0];p.step=v[1];p.conversion=quoteToUSD[quote]||1;p.pointValue=100000*p.conversion;p.contract=100000;
+  p.entry=v[0];p.step=v[1];p.pointValue=100000;p.contract=100000;
  }else if(asset==="Indices / CFDs"){
   const prices={NAS100:20000,US100:20000,US30:40000,DJ30:40000,US500:5000,SPX500:5000,US2000:2000,VIX:20,GER40:18000,DAX40:18000,UK100:8000,FTSE100:8000,FRA40:7500,CAC40:7500,EU50:5000,ESP35:11000,SWI20:12000,JPN225:38000,HK50:18000,HANGSENG:18000,AUS200:7800,ASX200:7800,CHINA50:12000,NIFTY50:24000,BANKNIFTY:52000,SENSEX:80000,FINNIFTY:23000};
   p.entry=prices[symbol]||20000;p.step=p.entry>=50000?50:p.entry>=10000?20:10;p.contract=1;p.pointValue=1;
@@ -163,7 +195,7 @@ function instrumentPreset(asset,symbol){
   p.entry=prices[symbol]||100;p.step=(symbol==="ES"||symbol==="MES"||symbol==="NQ"||symbol==="MNQ")?0.5:Math.max(0.1,p.entry*0.001);
   const multipliers={ES:50,MES:5,NQ:20,MNQ:2,YM:5,MYM:0.5,RTY:50,M2K:5,CL:1000,MCL:100,NG:10000,QM:500,GC:100,MGC:10,SI:5000,SIL:1000,HG:25000,PL:50,PA:100,ZC:50,ZW:50,ZS:50,ZM:100,ZL:600,KC:375,CC:10,SB:1120,CT:500,ZB:1000,ZN:1000,ZF:1000,ZT:1000,"6E":125000,"6B":62500,"6J":12500000,"6A":100000,"6C":100000,"6S":125000};
   p.contract=multipliers[symbol]||1;p.pointValue=multipliers[symbol]||1;
-  if(symbol==="FDAX"||symbol==="FESX"){p.contract=symbol==="FDAX"?25:10;p.conversion=1.08;p.pointValue=p.contract*p.conversion;}
+  if(symbol==="FDAX"||symbol==="FESX"){p.contract=symbol==="FDAX"?25:10;p.pointValue=p.contract;}
  }else if(asset==="Crypto"){
   const prices={BTCUSD:50000,BTCUSDT:50000,ETHUSD:3000,ETHUSDT:3000,SOLUSD:150,SOLUSDT:150,XRPUSD:0.6,XRPUSDT:0.6,BNBUSD:500,BNBUSDT:500,ADAUSD:0.5,ADAUSDT:0.5,DOGEUSD:0.15,DOGEUSDT:0.15,AVAXUSD:30,AVAXUSDT:30,LINKUSD:15,LINKUSDT:15,DOTUSD:7,DOTUSDT:7,LTCUSD:80};
   p.entry=prices[symbol]||100;p.step=Math.max(0.01,p.entry*0.01);p.contract=1;p.pointValue=1;
@@ -173,7 +205,7 @@ function instrumentPreset(asset,symbol){
 function applyInstrumentPreset(){
  const p=instrumentPreset($("asset").value,sym());
  $("entry").value=p.entry;$("stop").value=p.stop;$("target").value=p.target;
- $("contract").value=p.contract;$("pointValue").value=p.pointValue;$("conversion").value=p.conversion;
+ $("contract").value=p.contract;$("pointValue").value=p.pointValue;$("quoteCurrency").value=presetQuoteCurrency($("asset").value,sym());
  $("side").value="buy";
 }
 function resetRiskMode(){$("riskMode").value="cash";$("risk").value=75;applyInstrumentPreset();$("fees").value=0;calculate()}
@@ -187,10 +219,21 @@ function decimalPlaces(value){
   const [mantissa,exponent="0"]=String(value).split("e");
   return Math.max(0,(mantissa.split(".")[1]?.length||0)-Number(exponent));
 }
-function calculate(){sync();const bal=num("balance"),riskInput=num("risk"),lotsInput=num("lots"),lev=num("leverage"),fees=num("fees"),entry=num("entry"),sl=num("stop"),tp=num("target"),contract=num("contract"),pv=num("pointValue"),conv=num("conversion"),buy=$("side").value==="buy",mode=$("mode").value,symbol=sym();
-const riskBudget=$("riskMode").value==="percent"?bal*riskInput/100:riskInput;
-const valid=symbol&&bal>0&&lev>0&&fees>=0&&entry>0&&sl>=0&&tp>=0&&entry!==sl&&entry!==tp&&contract>0&&pv>0&&conv>0&&(mode==="fixed"?lotsInput>0:riskBudget>0&&riskInput>0);
-if(!valid){$("results").hidden=true;$("invalid").hidden=false;let msg="Complete the required fields with valid positive values.";if(mode==="risk"&&!(riskInput>0))msg="Enter your risk amount or percentage to calculate position size.";else if(mode==="fixed"&&!(lotsInput>0))msg="Enter the lot size / quantity you want to trade.";else if(entry===sl||entry===tp)msg="Entry, stop-loss and take-profit must be different prices.";$("invalid").textContent=msg;return}
+function calculate(){
+sync();
+const quoteInput=$("quoteCurrency").value.trim().toUpperCase(),account=$("currency").value;
+const quote=/^[A-Z]{3,5}$/.test(quoteInput)?quoteInput:"";
+syncConversion(quote,account);
+const percentRisk=$("riskMode").value==="percent";
+$("riskLabel").textContent=percentRisk?"Risk (% of account)":"Risk amount ("+account+")";
+const conv=num("conversion"),pv=num("pointValue")*conv;
+const conversionError=!quote?"Enter the instrument quote currency (for example, USD or USDT)."
+ :!Number.isFinite(conv)||conv<=0?"Enter a positive "+quote+" to "+account+" exchange rate."
+ :!Number.isFinite(pv)?"Check the point value and exchange rate.":"";
+const bal=num("balance"),riskInput=num("risk"),lotsInput=num("lots"),lev=num("leverage"),fees=num("fees"),entry=num("entry"),sl=num("stop"),tp=num("target"),contract=num("contract"),buy=$("side").value==="buy",mode=$("mode").value,symbol=sym();
+const riskBudget=percentRisk?bal*riskInput/100:riskInput;
+const valid=!conversionError&&symbol&&bal>0&&lev>0&&fees>=0&&entry>0&&sl>=0&&tp>=0&&entry!==sl&&entry!==tp&&contract>0&&pv>0&&conv>0&&(mode==="fixed"?lotsInput>0:riskBudget>0&&riskInput>0);
+if(!valid){$("results").hidden=true;$("invalid").hidden=false;let msg="Complete the required fields with valid positive values.";if(conversionError)msg=conversionError;else if(mode==="risk"&&!(riskInput>0))msg="Enter your risk amount or percentage to calculate position size.";else if(mode==="fixed"&&!(lotsInput>0))msg="Enter the lot size / quantity you want to trade.";else if(entry===sl||entry===tp)msg="Entry, stop-loss and take-profit must be different prices.";$("invalid").textContent=msg;return}
 $("results").hidden=false;$("invalid").hidden=true;
 const slCorrect=buy?sl<entry:sl>entry,tpCorrect=buy?tp>entry:tp<entry,slDist=Math.abs(entry-sl),tpDist=Math.abs(tp-entry);
 let qty=lotsInput;
@@ -232,6 +275,6 @@ $("percentages").textContent=fmt(loss/bal*100,2)+"% risk · "+fmt(gain/bal*100,2
 $("headline").textContent="Estimated net profit if take-profit hits";$("headlineValue").textContent=(gain>=0?"+":"−")+money(Math.abs(gain));$("headlineValue").style.color=gain>=0?"var(--green)":"var(--red)";
 $("tradeLabel").textContent=(buy?"BUY / LONG":"SELL / SHORT")+" · "+quantityText+" · "+symbol;
 const warnings=[];if(!slCorrect)warnings.push("Stop-loss is on the wrong side of entry for the selected direction.");if(!tpCorrect)warnings.push("Take-profit is on the wrong side of entry for the selected direction.");if(margin>bal)warnings.push("Estimated margin exceeds your account balance. Actual broker margin may differ.");if(loss>bal)warnings.push("The estimated stop-loss amount is greater than your account balance.");if(gain<0)warnings.push("Fees are greater than the gross profit at the target.");if(mode==="risk"&&loss>riskBudget+.01)warnings.push("Estimated loss exceeds your selected risk budget.");$("warnings").replaceChildren(...warnings.map(t=>{const d=document.createElement("div");d.className="warning";d.textContent=t;return d}));ladder(entry,sl,tp)}
-ids.forEach(id=>$(id).addEventListener("input",calculate));$("asset").addEventListener("change",populate);$("symbol").addEventListener("change",()=>{$("custom").hidden=$("symbol").value!=="CUSTOM";applyInstrumentPreset();calculate()});$("custom").addEventListener("input",calculate);$("mode").addEventListener("change",calculate);$("riskMode").addEventListener("change",calculate);$("riskChips").addEventListener("click",e=>{if(e.target.dataset.risk){$("riskMode").value="percent";$("risk").value=e.target.dataset.risk;calculate()}});$("resetRisk").addEventListener("click",resetRiskMode);$("resetFixed").addEventListener("click",resetFixedMode);populate();
+ids.forEach(id=>$(id).addEventListener("input",calculate));$("currency").addEventListener("change",calculate);$("asset").addEventListener("change",populate);$("symbol").addEventListener("change",()=>{$("custom").hidden=$("symbol").value!=="CUSTOM";applyInstrumentPreset();calculate()});$("custom").addEventListener("input",calculate);$("mode").addEventListener("change",calculate);$("riskMode").addEventListener("change",calculate);$("riskChips").addEventListener("click",e=>{if(e.target.dataset.risk){$("riskMode").value="percent";$("risk").value=e.target.dataset.risk;calculate()}});$("resetRisk").addEventListener("click",resetRiskMode);$("resetFixed").addEventListener("click",resetFixedMode);populate();
 })();
 </script></body></html>

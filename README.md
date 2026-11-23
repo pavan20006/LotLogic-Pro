@@ -105,14 +105,14 @@ Choose an asset class:
 
 Then select an instrument from its grouped list. For Other, select the custom instrument option and type the symbol yourself.
 
-When you change the selected instrument, LotLogic Pro loads **illustrative starting values** for entry, stop-loss, take-profit, contract units, point value and notional conversion where a preset is available. They are sample assumptions only — not live quotes or verified broker specifications. You can edit every value before calculating. The custom instrument option starts with generic editable values.
+When you change the selected instrument, LotLogic Pro loads **illustrative starting values** for entry, stop-loss, take-profit, contract units, point value and quote currency where a preset is available. They are sample assumptions only — not live quotes or verified broker specifications. You can edit every value before calculating. The custom instrument option starts with generic editable values.
 
 The symbol catalogue is a convenience list, not an official broker instrument list. Brokers may use different symbol names and contract specifications. Instrument presets are approximate examples intended to prevent obviously mismatched sample prices when switching asset classes. They do not establish a broker's true contract multiplier, point value, tick size, quote currency or current price.
 
 ### Step 3 — Enter account details
 
 - **Account balance:** the balance amount used for the estimates.
-- **Account currency:** the currency in which account-level results are displayed.
+- **Account currency:** defaults to USD. The balance, cash risk, fees and monetary results are labeled with the selected currency. With a USD account and a USD-quoted instrument such as EURUSD, the calculator uses a rate of 1 automatically and hides the exchange-rate input.
 
 ### Step 4 — Enter the trade details
 
@@ -129,8 +129,9 @@ Make sure the stop-loss and take-profit are on the correct sides of entry for th
 These values can vary significantly between brokers and products:
 
 - **Contract units per lot:** the contract multiplier used for estimated notional exposure.
-- **Point value:** the account-currency value of a 1.0 price-unit move for one lot/unit. The app uses this directly in its profit/loss calculation.
-- **Notional conversion:** a conversion multiplier used for the notional and margin estimate.
+- **Point value:** the value of a 1.0 price-unit move for one lot/unit, in the instrument’s quote currency.
+- **Quote currency:** the currency in which the instrument price and point value are expressed. Confirm the preset with your broker, or enter the quote currency for a custom instrument.
+- **Quote-to-account exchange rate:** the number of account-currency units per 1 quote-currency unit. For a USD instrument and INR account, for example, enter 83 if 1 USD equals 83 INR. Matching currencies use 1 automatically. Changing the currency pair clears the old rate. Account balance, cash risk and fees are entered directly in the selected account currency.
 - **Leverage:** enter 100 to represent 1:100 leverage.
 - **Fees:** enter estimated round-trip costs in the account currency.
 
@@ -198,15 +199,15 @@ The current implementation uses these calculation conventions:
 
 - Stop distance = absolute difference between entry and stop-loss.
 - Target distance = absolute difference between take-profit and entry.
-- Gross stop-loss amount = quantity × stop distance × point value.
-- Gross take-profit amount = quantity × target distance × point value.
+- Gross stop-loss amount = quantity × stop distance × point value × quote-to-account exchange rate.
+- Gross take-profit amount = quantity × target distance × point value × quote-to-account exchange rate.
 - Estimated net loss = gross stop-loss amount + entered fees.
 - Estimated net profit = gross take-profit amount − entered fees.
-- Estimated notional = quantity × contract units × entry × notional conversion.
+- Estimated notional = quantity × contract units × entry × quote-to-account exchange rate.
 - Estimated margin = estimated notional ÷ leverage.
-- Risk-sized quantity = (risk budget − fees) ÷ (stop distance × point value), rounded down to 0.01 increments.
+- Risk-sized quantity = (risk budget − fees) ÷ (stop distance × point value × quote-to-account exchange rate), rounded down to 0.01 increments.
 
-The point-value input is treated as the account-currency value of a 1.0 price-unit move for one lot/unit. The conversion input is used for notional and margin; it is not applied a second time to the profit/loss formula. Configure point value for the account currency you are using.
+The calculator applies the same quote-to-account rate to gross P&L and notional. Margin uses the converted notional, and fees are applied directly in the account currency.
 
 The displayed margin level is a simplified estimate based on starting balance divided by estimated margin. A broker may calculate margin level using equity, used margin and other rules.
 
